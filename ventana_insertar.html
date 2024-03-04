@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbox</title>
+    <link rel="stylesheet" href="styles_view.css">
+    <script src="jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+    <form id="frmajax" method="POST"> 
+        <div class="chat-container">
+        <h1>INGRESA LO SIGUIENTE PARA AYUDARLE A DAR-E</h1>
+        
+            <div class="message">
+                <input type="text" name="question" placeholder="Escribe tu pregunta aquí...">
+            </div>
+            <div class="message">
+                <input type="text" name="answer" placeholder="Escribe tu respuesta aquí...">
+            </div>
+            <button id="btnrecopilar">Recopilar</button>
+    </form>
+    
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btnrecopilar').click(function(){
+            var datos=$('#frmajax').serialize();
+            $.ajax({
+                type:"POST",
+                url:"insertar_view.php",
+                data:datos,
+                success:function(r){
+                    if(r==1){
+                        confirm(" Registro Ingresado con exito")
+                    }else{
+                        confirm("Registro no ingreado");
+                    }
+                }
+            });
+        });
+    });
+
+</script>

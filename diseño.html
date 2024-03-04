@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery-3.7.1.min.js"></script>
+    <!--Bostraap-->
+    
+<body>
+    <div class="chat-container">
+        <div class="chat-box">
+            <div  class="chat-message" >
+                <span   class="message"   >INTELIGENCIA ARTIFICIAL DAR-E</span>
+            </div>
+            <div class="chat-message right">
+                <span id="datosconsulta" class="message"></span>
+            </div>
+            <!-- Aquí irían más mensajes -->
+        </div>
+        <form id="frmajax" method="POST">
+            
+            <input type="text" name="question" id="user-input" placeholder="Hazme una pregunta...">
+            <button id="btnguardarr">Consulta con DAR-E</button>
+        </form>
+    <!--<div >
+
+        </div>-->
+        
+        
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btnguardarr').click(function(){
+            var datos=$('#frmajax').serialize();
+            $.ajax({
+                type:"POST",
+                url:"consultar.php",
+                data:datos,
+                success:function(r){
+                    $('#datosconsulta').html(r);
+
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+
