@@ -1,21 +1,15 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 5;
-    padding: 5px;
-    background-color: #f0f0f0;
-}
 
-.chat-container {
+/* .chat-container {
     max-width: 420px;
     margin: 130px auto;
     background-color: #fff;
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0px 0px 85px rgba(0, 0, 0, 0.5);
-}
+} */
 
 .chat-box {
-    height: 350px;
+    height: 50px;
     overflow-y: auto;
 }
 .message {
@@ -37,7 +31,7 @@ body {
 }
 
 #user-input {
-    width: calc(100% - 70px);
+    width: calc(100% - 50px);
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -45,7 +39,8 @@ body {
     margin-right: 10px;
 }
 
-#btnguardarr {
+.btn-success {
+    margin-top: 10px;
     padding: 10px 20px;
     border: none;
     background-color: #58D68D;
@@ -56,6 +51,26 @@ body {
     
 }
 
-#btnguardarr:hover {
-    background-color: #58D68D;
+.btn-success:hover {
+    background-color: #419e68;
+}
+
+.btn-danger {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #eb1414;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    
+}
+
+.btn-danger:hover {
+    background-color: #a0041e;
+}
+
+.group{
+    text-align: center;
 }

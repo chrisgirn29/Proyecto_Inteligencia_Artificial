@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbox</title>
-    <link rel="stylesheet" href="styles_view.css">
-    <script src="jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="../styles/styles_view.css">
+    <script src="../js/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
@@ -19,7 +19,7 @@
             <div class="message">
                 <input type="text" name="answer" placeholder="Escribe tu respuesta aquí...">
             </div>
-            <button id="btnrecopilar">Recopilar</button>
+            <button type="button" id="btnrecopilar">Recopilar</button>
     </form>
     
     </div>
@@ -31,14 +31,19 @@
             var datos=$('#frmajax').serialize();
             $.ajax({
                 type:"POST",
-                url:"insertar_view.php",
+                url:"../app/insertar_view.php",
                 data:datos,
                 success:function(r){
+                    console.log(r);
                     if(r==1){
                         confirm(" Registro Ingresado con exito")
                     }else{
                         confirm("Registro no ingreado");
                     }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr,status,error);
+                    alert("Ocurrió un error al procesar la solicitud. Por favor, inténtalo de nuevo.");
                 }
             });
         });

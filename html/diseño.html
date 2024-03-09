@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Box</title>
+    <link rel="stylesheet" href="../styles/style.css">
+    <!-- <link rel="stylesheet" href="loader.css"> -->
+    <script src="../js/jquery-3.7.1.min.js"></script>
+    <!--Bostraap-->
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: white; /* Fondo blanco */
+        }
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* width: 100%; */
+            /* height: 100%; */
+        }
+    </style>
+</head>
+<body>
+    
+    <div  class="chat-message" >
+        <span   class="message"   >INTELIGENCIA ARTIFICIAL DAR-E</span>
+    </div>
+    <div class="chat-message right">
+        <span id="datosconsulta" class="message"></span>
+    </div>
+
+    
+    <div id="container">
+        <div id="canvas-container">
+            <div class="group">
+                <form id="frmajax">
+                    <input type="text" name="question" onchange="peticion()" id="user-input" placeholder="Hazme una pregunta..." style="text-align: center">
+                    <button class="btn-success" type="button" id="btnguardarr" onclick="peticion()">Consulta con DAR-E</button>
+                    <button class="btn-danger" type="button" onmousedown="empezarGrabacion()" onmouseup="terminarGrabacion()" id="btn_microfono">Hablar con DAR-E</button>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
+<script src="../js/three.min.js"></script>
+<script src="../js/gsap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        setTimeout(function(){
+            leerTexto('hola, mi nombre es dar-e, en que puedo ayudarte.');
+        }, 2000);
+    });
+
+    function peticion(){
+        var inpt = $('#user-input').val();
+        if (inpt != '') {
+            var datos=$('#frmajax').serialize();
+            $.ajax({
+                type:"POST",
+                url:"../app/consultar.php",
+                data:datos,
+                
+                success:function(r){
+                    if (r != 0) {
+                        $('#datosconsulta').html(r);
+                        leerTexto(r);
+                    }else{
+                        var res = "No tengo registros sobre la informacion que necesitas saber! ¿Deseas ayudarme a aprender?";
+                        $('#datosconsulta').html(res);
+                        leerTexto(res);
+                        if (confirm('¿Deseas ayudarme a aprender?')) {
+                            window.open('ventana_insertar.html', '_blank');
+                        }
+                    
+                    }
+                }
+            });
+            return false;
+        }else{
+            var res = "No entiendo tu pregunta, podrias volver a repetirla.";
+            leerTexto(res);
+        }
+    }
+
+    function leerTexto(texto) {
+        var synth = window.speechSynthesis;
+        var utterThis = new SpeechSynthesisUtterance(texto);
+        utterThis.lang = 'es-ES';
+        utterThis.pitch = 0.1;
+
+        toggleSpeaking();
+
+        utterThis.onend = function() {
+            toggleSpeaking();
+        };
+
+        synth.speak(utterThis);
+
+    }
+
+    let reconocimientoVoz;
+    let textoTranscrito = '';
+
+    function empezarGrabacion() {
+        reconocimientoVoz = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        reconocimientoVoz.lang = 'es-ES';
+        reconocimientoVoz.start();
+        reconocimientoVoz.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            textoTranscrito += transcript;
+            $('#user-input').val(transcript).trigger('change');
+        };
+    }
+
+    function terminarGrabacion() {
+        reconocimientoVoz.stop();
+    }
+
+    var scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xffffff); 
+    var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 400);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+    var particleCount = 3000;
+    var particles = new THREE.BufferGeometry();
+    var positions = [];
+
+    for (var p = 0; p < particleCount; p++) {
+        var theta = Math.random() * Math.PI * 2;
+        var phi = Math.random() * Math.PI;
+        var radius = 100;
+
+        var x = radius * Math.sin(phi) * Math.cos(theta);
+        var y = radius * Math.sin(phi) * Math.sin(theta);
+        var z = radius * Math.cos(phi);
+
+        positions.push(x, y, z);
+    }
+
+    particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+    var particleMaterial = new THREE.PointsMaterial({
+        color: 0xFF69B4, // Color de las partículas
+        size: 1.5
+    });
+
+    var particleSystem = new THREE.Points(particles, particleMaterial);
+    scene.add(particleSystem);
+
+    camera.position.z = 300;
+
+    var speakingTween = gsap.to(particleSystem.scale, {
+        duration: 0.2,
+        x: 1.2,
+        y: 1.2,
+        z: 1.2,
+        yoyo: true,
+        repeat: -1,
+        paused: true
+    });
+
+    function toggleSpeaking() {
+        speakingTween.paused(!speakingTween.paused());
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        particleSystem.rotation.x += 0.001;
+        particleSystem.rotation.y += 0.001;
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    });
+
+</script>
+
